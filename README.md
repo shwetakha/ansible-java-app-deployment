@@ -40,19 +40,19 @@ Instructions to use this code on Ubuntu:-
 		ssh-copy-id user1@localhost	
 			
 6. Setting worker nodes (hosts):
-Default ansible installation directory is /etc/ansible.	
-
-
-	check if the hosts are reachable via command:
-	ansible web -m ping	
 	
-	edit /etc/ansible/hosts file to add web server:
-	sudo vim /etc/ansible/hosts
-		[web]
-		localhost
+		Default ansible installation directory is /etc/ansible.	
+
+		check if the hosts are reachable via command:
+		ansible web -m ping	
+	
+		edit /etc/ansible/hosts file to add web server:
+		sudo vim /etc/ansible/hosts
+			[web]
+			localhost
 			
-	check if the hosts are reachable via command:
-	ansible web -m ping
+		check if the hosts are reachable via command:
+		ansible web -m ping
 			
 7. Create Playbook:
 
