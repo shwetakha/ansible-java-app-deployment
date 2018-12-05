@@ -27,7 +27,7 @@ Instructions to use this code on Ubuntu:-
 		sudo vim /etc/sudoers
 			user1 ALL=(ALL) NOPASSWD: ALL	
 			
-4. ON master and remote node edit sshd_config file:
+4. On master and remote node edit sshd_config file:
 	
 		sudo vim /etc/ssh/sshd_config
 			PasswordAuthentication yes
@@ -43,9 +43,6 @@ Instructions to use this code on Ubuntu:-
 	
 		Default ansible installation directory is /etc/ansible.	
 
-		check if the hosts are reachable via command:
-		ansible web -m ping	
-	
 		edit /etc/ansible/hosts file to add web server:
 		sudo vim /etc/ansible/hosts
 			[web]
