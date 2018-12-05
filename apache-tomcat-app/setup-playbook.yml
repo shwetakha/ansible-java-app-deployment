@@ -1,0 +1,39 @@
+- hosts: all
+  remote_user: user1
+  become: yes
+  tasks:
+  - name: Update apt-get
+    apt: update_cache=yes
+  - name: Install Apache
+    apt: name=apache2 state=present
+  - name: Install Libapache-mod-jk
+    apt: name=libapache2-mod-jk state=present
+  - name: Install Mysql 5.5
+    apt: name=mysql-server state=present
+  - name: Load mysql on startup
+    command: update-rc.d mysql defaults
+  - name: Install Java
+    apt: name=default-jdk state=present
+  - name: Create Tomcat Node directories
+    file: path=/etc/tomcat state=directory mode=0777
+  - file: path=/etc/tomcat/server1 state=directory mode=0775
+  - file: path=/etc/tomcat/server2 state=directory mode=0775
+  - name: Download Tomcat 7 Package
+    get_url: url=http://apache.mirror.digionline.de/tomcat/tomcat-7/v7.0.92/bin/apache-tomcat-7.0.92.tar.gz dest='/etc/tomcat'
+  - unarchive: src=/etc/tomcat/apache-tomcat-7.0.92.tar.gz dest=/etc/tomcat/server1 copy=no
+  - unarchive: src=/etc/tomcat/apache-tomcat-7.0.92.tar.gz dest=/etc/tomcat/server2 copy=no
+  - name: Editing Tomcat configuration files
+    replace: dest=/etc/tomcat/server2/apache-tomcat-7.0.92/conf/server.xml regexp='^<Server port="8005" shutdown="SHUTDOWN">' replace='<Server port="9005" shutdown="SHUTDOWN">'
+  - replace: dest=/etc/tomcat/server2/apache-tomcat-7.0.92/conf/server.xml regexp='^    <Connector port="8080" protocol="HTTP/1.1"' replace='      <Connector port="9090" protocol="HTTP/1.1"'
+  - replace: dest=/etc/tomcat/server2/apache-tomcat-7.0.92/conf/server.xml regexp='^    <Connector port="8009" protocol="AJP/1.3" redirectPort="8443"' replace='   <Connector port="9009" protocol="AJP/1.3" redirectPort="9443"'
+  - name: Configuring Mod-Jk & Apache
+    replace: dest=/etc/libapache2-mod-jk/workers.properties regexp='^#------ worker list ------------------------------------------' replace="worker.list=loadbalancer,status \n worker.server1.port=8009 \n worker.server1.host=localhost \n worker.server1.type=ajp13 \n worker.server2.port=9009 \n worker.server2.host=localhost \n worker.server2.type=ajp13 \n worker.server1.lbfactor=1 \n worker.server2.lbfactor=1 \n worker.loadbalancer.type=lb \n worker.loadbalancer.balance_workers=server1,server2 \n worker.status.type=status"
+  - replace: dest=/etc/apache2/sites-enabled/000-default.conf regexp='^</VirtualHost>' replace="JkMount /status status \n JkMount /* loadbalancer \n JkMountCopy On \n </VirtualHost>"
+  - name: Download Sample Tomcat Application
+    get_url: url=https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war dest='/etc/tomcat/server1/apache-tomcat-7.0.92/webapps' validate_certs=no
+  - get_url: url=https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war dest='/etc/tomcat/server2/apache-tomcat-7.0.92/webapps' validate_certs=no
+  - name: Restart Apache
+    service: name=apache2 state=restarted
+  - name: Start Tomcat nodes
+    command: nohup /etc/tomcat/server1/apache-tomcat-7.0.92/bin/catalina.sh start
+  - command: nohup /etc/tomcat/server2/apache-tomcat-7.0.92/bin/catalina.sh start
