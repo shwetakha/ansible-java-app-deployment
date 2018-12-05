@@ -11,10 +11,10 @@ MySQL server is also installed as a service to automatically start up on server 
 Instructions to use this code on Ubuntu:-
 
 1. Install Ansible:
-	sudo apt-get update
-	sudo apt-get install software-properties-common
-	sudo apt-add-repository ppa:ansible/ansible
-	sudo apt-get update
+	sudo apt-get update;
+	sudo apt-get install software-properties-common;
+	sudo apt-add-repository ppa:ansible/ansible;
+	sudo apt-get update;
 	sudo apt-get install ansible
 	
 2. Create new user:
@@ -30,8 +30,8 @@ Instructions to use this code on Ubuntu:-
 		PermitRootLogin yes
 	
 3. Switch user to user1 and create keys
-	su - user1
-	ssh-keygen
+	su - user1;
+	ssh-keygen;
 	ssh-copy-id user1@localhost
 	
 4. Setting worker nodes (hosts):
@@ -45,7 +45,7 @@ Instructions to use this code on Ubuntu:-
 			ansible web -m ping
 			
 5. Create Playbook:
-    cd /etc/ansible
+    cd /etc/ansible;
 	sudo vim setup-playbook.yml (Available in folder apache-tomcat-app in repository)
 
 6. To Execute a playbook:
