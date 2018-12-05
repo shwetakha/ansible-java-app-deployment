@@ -36,8 +36,8 @@ Instructions to use this code on Ubuntu:-
 	
 4. Setting worker nodes (hosts):
 	Default ansible installation directory is /etc/ansible.
-	edit /etc/ansible/hosts file to add server
-		sudo vim /etc/ansible/hosts
+	edit /etc/ansible/hosts file to add web server
+		sudo vim /etc/ansible/hosts;
 			[web]
 			localhost
 			
